@@ -36,11 +36,15 @@ class Pawn(Piece):
     def get_available_moves(self, board) -> List[Square]:
         current_square = board.find_piece(self)
         square_list = []
-        if self.player == Player.BLACK and not self.has_piece_in_front(board, current_square):
+        if not self.can_move(board, current_square):
+            return square_list
+        if self.player == Player.BLACK:
             square_list.append(Square.at(current_square.row - 1, current_square.col))
+
             if current_square.row == 6 and not self.has_piece_in_front(board, current_square, distance=2):
                 square_list.append(Square.at(current_square.row -2, current_square.col))
-        elif not self.has_piece_in_front(board, current_square):
+
+        else:
             square_list.append(Square.at(current_square.row + 1, current_square.col))
             if current_square.row == 1 and not self.has_piece_in_front(board, current_square, distance=2):
                 square_list.append(Square.at(current_square.row + 2, current_square.col))
@@ -55,6 +59,19 @@ class Pawn(Piece):
                 return True
 
         return False
+
+    def at_edge(self, square: Square) -> bool:
+        if self.player == Player.BLACK:
+            if square.row == 0:
+                return True
+        else:
+            if square.row == 7:
+                return True
+
+        return False
+
+    def can_move(self, board: Board, square: Square) -> bool:
+        return not (self.at_edge(square) or self.has_piece_in_front(board, square))
 
 
 
