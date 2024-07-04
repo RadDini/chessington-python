@@ -35,12 +35,27 @@ class Pawn(Piece):
     """
     def get_available_moves(self, board) -> List[Square]:
         current_square = board.find_piece(self)
+        square_list = []
+        if self.player == Player.BLACK and not self.has_piece_in_front(board, current_square):
+            square_list.append(Square.at(current_square.row - 1, current_square.col))
+            if current_square.row == 6 and not self.has_piece_in_front(board, current_square, distance=2):
+                square_list.append(Square.at(current_square.row -2, current_square.col))
+        elif not self.has_piece_in_front(board, current_square):
+            square_list.append(Square.at(current_square.row + 1, current_square.col))
+            if current_square.row == 1 and not self.has_piece_in_front(board, current_square, distance=2):
+                square_list.append(Square.at(current_square.row + 2, current_square.col))
+        return square_list
+
+    def has_piece_in_front(self, board: Board, current_square, distance=1) -> bool:
         if self.player == Player.BLACK:
-            square_in_front = Square.at(current_square.row - 1, current_square.col)
-            return [square_in_front]
+            if board.get_piece(Square.at(current_square.row - distance, current_square.col)):
+                return True
         else:
-            square_in_front = Square.at(current_square.row + 1, current_square.col)
-            return [square_in_front]
+            if board.get_piece(Square.at(current_square.row + distance, current_square.col)):
+                return True
+
+        return False
+
 
 
 class Knight(Piece):
