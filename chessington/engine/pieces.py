@@ -125,7 +125,22 @@ class Knight(Piece):
     """
 
     def get_available_moves(self, board):
-        return []
+        current_square = board.find_piece(self)
+        square_list = []
+
+        directions = [(2, 1), (2, -1),
+                      (-2, 1), (-2, -1),
+                      (1, 2), (1, -2),
+                      (-1, 2), (-1, -2)]
+
+        for direction in directions:
+            square_to_move = Square.at(current_square.row + direction[0], current_square.col + direction[1])
+            if board.is_in_bounds(square_to_move):
+                square_list.append(square_to_move)
+
+        return square_list
+
+
 
 
 class Bishop(Piece):
