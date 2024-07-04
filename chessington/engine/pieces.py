@@ -6,6 +6,8 @@ from typing import TYPE_CHECKING, List
 if TYPE_CHECKING:
     from chessington.engine.board import Board
 
+BOARD_SIZE = 8
+
 
 class Piece(ABC):
     """
@@ -35,32 +37,22 @@ class Pawn(Piece):
     A class representing a chess pawn.
     """
 
-    def get_available_moves(self, board) -> List[Square]:
-        current_square = board.find_piece(self)
-        square_list = []
-        if not self.can_move(board, current_square):
-            return square_list
-
+    def has_not_moved(self, current_square) -> bool:
         if self.player == Player.BLACK:
-            square_list.append(Square.at(current_square.row - 1, current_square.col))
-
-            if current_square.row == 6 and not self.has_piece_in_front(board, current_square, distance=2):
-                square_list.append(Square.at(current_square.row - 2, current_square.col))
+            if current_square.row == BOARD_SIZE - 2:
+                return True
         else:
-            square_list.append(Square.at(current_square.row + 1, current_square.col))
-            if current_square.row == 1 and not self.has_piece_in_front(board, current_square, distance=2):
-                square_list.append(Square.at(current_square.row + 2, current_square.col))
-        square_list += self.get_moves_diag(board, current_square)
+            if current_square.row == 1:
+                return True
+        return False
 
-        return square_list
 
     def has_piece_in_front(self, board: Board, current_square, distance=1) -> bool:
         if self.player == Player.BLACK:
-            if board.get_piece(Square.at(current_square.row - distance, current_square.col)):
-                return True
-        else:
-            if board.get_piece(Square.at(current_square.row + distance, current_square.col)):
-                return True
+            distance *= -1
+
+        if board.get_piece(Square.at(current_square.row + distance, current_square.col)):
+            return True
 
         return False
 
@@ -68,26 +60,21 @@ class Pawn(Piece):
         if self.player == Player.BLACK:
             if square.row == 0:
                 return True
-        else:
-            if square.row == 7:
-                return True
+        elif square.row == BOARD_SIZE - 1:
+            return True
 
         return False
 
     def has_piece_diagonal(self, board: Board, square: Square) -> bool:
+        increment = 1
         if self.player == Player.BLACK:
-            diag_left = board.get_piece(Square.at(square.row - 1, square.col - 1))
-            diag_right = board.get_piece(Square.at(square.row - 1, square.col + 1))
+            increment = -1
 
-            if (diag_left and diag_left.player == Player.WHITE) \
-                    or (diag_right and diag_right.player == Player.BLACK):
-                return True
-        else:
-            diag_left = board.get_piece(Square.at(square.row + 1, square.col - 1))
-            diag_right = board.get_piece(Square.at(square.row + 1, square.col + 1))
+            diag_left = board.get_piece(Square.at(square.row + increment, square.col - 1))
+            diag_right = board.get_piece(Square.at(square.row + increment, square.col + 1))
 
-            if (diag_left and diag_left.player == Player.BLACK) \
-                    or (diag_right and diag_right.player == Player.BLACK):
+            if (diag_left and diag_left.player != self.player) \
+                    or (diag_right and diag_right.player != self.player):
                 return True
         return False
 
@@ -118,6 +105,24 @@ class Pawn(Piece):
             return self.has_piece_diagonal(board, square) or not self.has_piece_in_front(board, square)
 
         return False
+
+    def get_available_moves(self, board) -> List[Square]:
+        current_square = board.find_piece(self)
+        square_list = []
+        increment = 1
+        if not self.can_move(board, current_square):
+            return square_list
+
+        if self.player == Player.BLACK:
+            increment *= -1
+
+        square_list.append(Square.at(current_square.row + increment, current_square.col))
+        if self.has_not_moved(current_square) and not self.has_piece_in_front(board, current_square, distance=2):
+            square_list.append(Square.at(current_square.row + (2 * increment), current_square.col))
+
+        square_list += self.get_moves_diag(board, current_square)
+
+        return square_list
 
 
 class Knight(Piece):

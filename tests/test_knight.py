@@ -5,7 +5,7 @@ from chessington.engine.data import Player, Square
 from chessington.engine.pieces import Knight
 
 
-class TestPawns:
+class TestKnight:
 
     @staticmethod
     def test_kngiht_can_move_two_up_one_left():

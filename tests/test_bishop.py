@@ -5,7 +5,7 @@ from chessington.engine.data import Player, Square
 from chessington.engine.pieces import Bishop
 
 
-class TestPawns:
+class TestBishop:
 
     @staticmethod
     def test_bishop_can_move_up_right_diagonal():
