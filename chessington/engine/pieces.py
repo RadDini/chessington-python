@@ -164,7 +164,7 @@ class Bishop(Piece):
         directions = [(1, 1), (1, -1), (-1, 1), (-1, -1)]
         invalid_directions = []
 
-        while len(invalid_directions) < 4:
+        while len(invalid_directions) < len(directions):
             next_squares = [Square.at(square.row + directions[i][0], square.col + directions[i][1])
                             for i, square in enumerate(next_squares)]
 
@@ -174,6 +174,12 @@ class Bishop(Piece):
                 if not board.is_in_bounds(next_square):
                     invalid_directions.append(square_index)
                     continue
+
+                piece = board.get_piece(next_square)
+                if piece:
+                    invalid_directions.append(square_index)
+                    if piece.player == self.player:
+                        continue
 
                 square_list.append(next_square)
 
