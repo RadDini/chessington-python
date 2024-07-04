@@ -153,7 +153,26 @@ class Bishop(Piece):
     """
 
     def get_available_moves(self, board):
-        return []
+        current_square = board.find_piece(self)
+        square_list = []
+        next_squares = [current_square, current_square, current_square, current_square]
+        directions = [(1, 1), (1, -1), (-1, 1), (-1, -1)]
+        invalid_directions = []
+
+        while len(invalid_directions) < 4:
+            next_squares = [Square.at(square.row + directions[i][0], square.col + directions[i][1])
+                            for i, square in enumerate(next_squares)]
+
+            for square_index, next_square in enumerate(next_squares):
+                if square_index in invalid_directions:
+                    continue
+                if not board.is_in_bounds(next_square):
+                    invalid_directions.append(square_index)
+                    continue
+
+                square_list.append(next_square)
+
+        return square_list
 
 
 class Rook(Piece):
