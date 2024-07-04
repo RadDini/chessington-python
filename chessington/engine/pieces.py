@@ -1,7 +1,7 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from chessington.engine.data import Player, Square
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, List, Tuple
 
 if TYPE_CHECKING:
     from chessington.engine.board import Board
@@ -152,6 +152,39 @@ class Knight(Piece):
         return square_list
 
 
+
+def get_moves_on_directions(board: Board, square: Square, player, directions : List[Tuple[int, int]]) -> List[Square]:
+    next_squares = [square for _ in directions]
+    invalid_directions = []
+
+    square_list = []
+
+    while len(invalid_directions) < len(directions):
+        next_squares = [Square.at(square.row + directions[i][0], square.col + directions[i][1])
+                        for i, square in enumerate(next_squares)]
+
+        for square_index, next_square in enumerate(next_squares):
+            # check valid direction
+            if square_index in invalid_directions:
+                continue
+
+            # check if is in bounds
+            if not board.is_in_bounds(next_square):
+                invalid_directions.append(square_index)
+                continue
+
+            # check if piece in front
+            piece = board.get_piece(next_square)
+            if piece:
+                invalid_directions.append(square_index)
+                if piece.player == player:
+                    continue
+
+            square_list.append(next_square)
+
+    return square_list
+
+
 class Bishop(Piece):
     """
     A class representing a chess bishop.
@@ -159,32 +192,30 @@ class Bishop(Piece):
 
     def get_available_moves(self, board):
         current_square = board.find_piece(self)
-        square_list = []
-        next_squares = [current_square, current_square, current_square, current_square]
         directions = [(1, 1), (1, -1), (-1, 1), (-1, -1)]
-        invalid_directions = []
 
-        while len(invalid_directions) < len(directions):
-            next_squares = [Square.at(square.row + directions[i][0], square.col + directions[i][1])
-                            for i, square in enumerate(next_squares)]
+        # while len(invalid_directions) < len(directions):
+        #     next_squares = [Square.at(square.row + directions[i][0], square.col + directions[i][1])
+        #                     for i, square in enumerate(next_squares)]
+        #
+        #     for square_index, next_square in enumerate(next_squares):
+        #         if square_index in invalid_directions:
+        #             continue
+        #         if not board.is_in_bounds(next_square):
+        #             invalid_directions.append(square_index)
+        #             continue
+        #
+        #         piece = board.get_piece(next_square)
+        #         if piece:
+        #             invalid_directions.append(square_index)
+        #             if piece.player == self.player:
+        #                 continue
+        #
+        #         square_list.append(next_square)
+        #
+        # return square_list
 
-            for square_index, next_square in enumerate(next_squares):
-                if square_index in invalid_directions:
-                    continue
-                if not board.is_in_bounds(next_square):
-                    invalid_directions.append(square_index)
-                    continue
-
-                piece = board.get_piece(next_square)
-                if piece:
-                    invalid_directions.append(square_index)
-                    if piece.player == self.player:
-                        continue
-
-                square_list.append(next_square)
-
-        return square_list
-
+        return get_moves_on_directions(board, current_square, self.player, directions)
 
 class Rook(Piece):
     """
