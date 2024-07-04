@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, List
 if TYPE_CHECKING:
     from chessington.engine.board import Board
 
+
 class Piece(ABC):
     """
     An abstract base class from which all pieces inherit.
@@ -33,6 +34,7 @@ class Pawn(Piece):
     """
     A class representing a chess pawn.
     """
+
     def get_available_moves(self, board) -> List[Square]:
         current_square = board.find_piece(self)
         square_list = []
@@ -43,7 +45,7 @@ class Pawn(Piece):
             square_list.append(Square.at(current_square.row - 1, current_square.col))
 
             if current_square.row == 6 and not self.has_piece_in_front(board, current_square, distance=2):
-                square_list.append(Square.at(current_square.row -2, current_square.col))
+                square_list.append(Square.at(current_square.row - 2, current_square.col))
         else:
             square_list.append(Square.at(current_square.row + 1, current_square.col))
             if current_square.row == 1 and not self.has_piece_in_front(board, current_square, distance=2):
@@ -74,10 +76,10 @@ class Pawn(Piece):
 
     def has_piece_diagonal(self, board: Board, square: Square) -> bool:
         if self.player == Player.BLACK:
-            diag_left = board.get_piece(Square.at(square.row-1, square.col-1))
-            diag_right = board.get_piece(Square.at(square.row-1, square.col+1))
+            diag_left = board.get_piece(Square.at(square.row - 1, square.col - 1))
+            diag_right = board.get_piece(Square.at(square.row - 1, square.col + 1))
 
-            if (diag_left and diag_left.player == Player.WHITE)\
+            if (diag_left and diag_left.player == Player.WHITE) \
                     or (diag_right and diag_right.player == Player.BLACK):
                 return True
         else:
@@ -118,7 +120,6 @@ class Pawn(Piece):
         return False
 
 
-
 class Knight(Piece):
     """
     A class representing a chess knight.
@@ -136,11 +137,14 @@ class Knight(Piece):
         for direction in directions:
             square_to_move = Square.at(current_square.row + direction[0], current_square.col + direction[1])
             if board.is_in_bounds(square_to_move):
+                # check if not same color piece on square_to_move
+                piece_on_square = board.get_piece(square_to_move)
+                if piece_on_square and piece_on_square.player == self.player:
+                    continue
+
                 square_list.append(square_to_move)
 
         return square_list
-
-
 
 
 class Bishop(Piece):

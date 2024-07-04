@@ -251,11 +251,15 @@ class TestPawns:
     def test_knight_cannot_take_same_color():
         # Arrange
         board = Board.empty()
+
         knight = Knight(Player.BLACK)
         knight_to_take = Knight(Player.BLACK)
+
         square = Square.at(4, 4)
         square_to_take = Square.at(5, 6)
+
         board.set_piece(square, knight)
+        board.set_piece(square_to_take, knight_to_take)
 
         # Act
         moves = knight.get_available_moves(board)
@@ -267,11 +271,15 @@ class TestPawns:
     def test_knight_can_take_other_color():
         # Arrange
         board = Board.empty()
+
         knight = Knight(Player.BLACK)
         knight_to_take = Knight(Player.WHITE)
+
         square = Square.at(4, 4)
         square_to_take = Square.at(5, 6)
+
         board.set_piece(square, knight)
+        board.set_piece(square_to_take, knight_to_take)
 
         # Act
         moves = knight.get_available_moves(board)
