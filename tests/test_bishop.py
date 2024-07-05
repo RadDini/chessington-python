@@ -137,4 +137,70 @@ class TestBishop:
         assert Square.at(3, 5) in moves
         assert Square.at(5, 3) in moves
 
+    @staticmethod
+    def test_bishop_cannot_move_out_corner_top_left():
+        # Arrange
+        board = Board.empty()
+        bishop = Bishop(Player.BLACK)
+        square = Square.at(7, 0)
+        board.set_piece(square, bishop)
+
+        # Act
+        moves = bishop.get_available_moves(board)
+
+        # Assert
+        assert Square.at(8, -1) not in moves
+        assert Square.at(8, 1) not in moves
+        assert Square.at(6, -1) not in moves
+
+    @staticmethod
+    def test_bishop_cannot_move_out_corner_top_right():
+        # Arrange
+        board = Board.empty()
+        bishop = Bishop(Player.BLACK)
+        square = Square.at(7, 7)
+        board.set_piece(square, bishop)
+
+        # Act
+        moves = bishop.get_available_moves(board)
+
+        # Assert
+        assert Square.at(8, 8) not in moves
+        assert Square.at(8, 6 ) not in moves
+        assert Square.at(6, 8) not in moves
+
+    @staticmethod
+    def test_bishop_cannot_move_out_corner_bottom_left():
+        # Arrange
+        board = Board.empty()
+        bishop = Bishop(Player.BLACK)
+        square = Square.at(0, 0)
+        board.set_piece(square, bishop)
+
+        # Act
+        moves = bishop.get_available_moves(board)
+
+        # Assert
+        assert Square.at(-1, -1) not in moves
+        assert Square.at(-1,1) not in moves
+        assert Square.at(1, -1) not in moves
+
+    @staticmethod
+    def test_bishop_cannot_move_out_corner_bottom_right():
+        # Arrange
+        board = Board.empty()
+        bishop = Bishop(Player.BLACK)
+        square = Square.at(0, 7)
+        board.set_piece(square, bishop)
+
+        # Act
+        moves = bishop.get_available_moves(board)
+
+        # Assert
+        assert Square.at(-1, 8) not in moves
+        assert Square.at(-1, 6) not in moves
+        assert Square.at(1, 8) not in moves
+
+
+
 
