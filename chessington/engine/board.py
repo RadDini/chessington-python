@@ -104,9 +104,9 @@ class Board:
 
             self.current_player = self.current_player.opponent()
 
-        if self.is_checkmate(self.current_player):
-            print("Checkmate!")
-            exit(0)
+        # if self.is_checkmate(self.current_player):
+        #     print("Checkmate!")
+        #     exit(0)
 
 
     def is_check(self, king_square=None, current_player=Player.WHITE):
@@ -126,7 +126,7 @@ class Board:
         return False
 
     def is_checkmate(self, king_square=None, current_player=Player.WHITE):
-        if self.is_check(self.current_player):
+        if self.is_check(current_player=current_player.opponent()):
             print("Is check!")
             for row in range(BOARD_SIZE):
                 for col in range(BOARD_SIZE):
@@ -134,7 +134,7 @@ class Board:
 
                     piece = self.get_piece(piece_square)
 
-                    if len(piece.get_available_moves(self)) > 0:
+                    if piece.player == current_player.opponent() and len(piece.get_available_moves(self)) > 0:
                         return False
 
             return True
