@@ -228,4 +228,24 @@ class King(Piece):
     """
 
     def get_available_moves(self, board):
-        return []
+        current_square = board.find_piece(self)
+        directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+
+        square_list = []
+
+        for direction in directions:
+            next_square = Square.at(current_square.row + direction[0], current_square.col + direction[1])
+
+            if not board.is_in_bounds(next_square):
+                continue
+
+            piece = board.get_piece(next_square)
+
+            if piece:
+                if piece.player == self.player:
+                    continue
+
+            square_list.append(next_square)
+
+        return square_list
+
