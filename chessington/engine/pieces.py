@@ -194,28 +194,8 @@ class Bishop(Piece):
         current_square = board.find_piece(self)
         directions = [(1, 1), (1, -1), (-1, 1), (-1, -1)]
 
-        # while len(invalid_directions) < len(directions):
-        #     next_squares = [Square.at(square.row + directions[i][0], square.col + directions[i][1])
-        #                     for i, square in enumerate(next_squares)]
-        #
-        #     for square_index, next_square in enumerate(next_squares):
-        #         if square_index in invalid_directions:
-        #             continue
-        #         if not board.is_in_bounds(next_square):
-        #             invalid_directions.append(square_index)
-        #             continue
-        #
-        #         piece = board.get_piece(next_square)
-        #         if piece:
-        #             invalid_directions.append(square_index)
-        #             if piece.player == self.player:
-        #                 continue
-        #
-        #         square_list.append(next_square)
-        #
-        # return square_list
-
         return get_moves_on_directions(board, current_square, self.player, directions)
+
 
 class Rook(Piece):
     """
@@ -223,7 +203,10 @@ class Rook(Piece):
     """
 
     def get_available_moves(self, board):
-        return []
+        current_square = board.find_piece(self)
+        directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+
+        return get_moves_on_directions(board, current_square, self.player, directions)
 
 
 class Queen(Piece):
