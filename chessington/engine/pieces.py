@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import logging
-
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, List, Tuple, Any
 
@@ -11,9 +9,6 @@ if TYPE_CHECKING:
     from chessington.engine.board import Board
 
 BOARD_SIZE = 8
-
-logger = logging.getLogger(__name__)
-logging.basicConfig(filename='chessington.log', level=logging.DEBUG)
 
 
 class Piece(ABC):
