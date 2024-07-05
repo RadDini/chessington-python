@@ -17,6 +17,7 @@ class Board:
     def __init__(self, player, board_state):
         self.current_player = Player.WHITE
         self.board = board_state
+        self.last_piece_moved = None
 
     @staticmethod
     def empty():
@@ -83,3 +84,4 @@ class Board:
             self.set_piece(to_square, moving_piece)
             self.set_piece(from_square, None)
             self.current_player = self.current_player.opponent()
+            self.last_piece_moved = moving_piece

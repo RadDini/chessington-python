@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, List, Tuple
+from typing import TYPE_CHECKING, List, Tuple, Any
 
 from chessington.engine.data import Player, Square
 
@@ -39,6 +39,10 @@ class Pawn(Piece):
     A class representing a chess pawn.
     """
 
+    def __init__(self, player: Player):
+        super().__init__(player)
+        self.has_moved_two = False
+
     def has_not_moved(self, current_square) -> bool:
         if self.player == Player.BLACK:
             if current_square.row == BOARD_SIZE - 2:
@@ -67,13 +71,13 @@ class Pawn(Piece):
         return False
 
     def get_moves_diagonal(self, board: Board, square: Square) -> List[Square]:
-        increment = 1
+        square_in_front = 1
         square_list = []
         if self.player == Player.BLACK:
-            increment = -1
+            square_in_front = -1
 
-        square_diag_left = Square.at(square.row + increment, square.col - 1)
-        square_diag_right = Square.at(square.row + increment, square.col + 1)
+        square_diag_left = Square.at(square.row + square_in_front, square.col - 1)
+        square_diag_right = Square.at(square.row + square_in_front, square.col + 1)
         diag_left = None
         diag_right = None
 
@@ -91,20 +95,51 @@ class Pawn(Piece):
 
         return square_list
 
-    def can_move(self, board: Board, square: Square, has_piece_diagonal: bool) -> bool:
-        if not self.at_edge(square):
-            return has_piece_diagonal or not self.has_piece_in_front(board, square)
+    def get_en_passant(self, board: Board, square: Square) -> Any | None:
+        square_in_front = 1
 
-        return False
+        if self.player == Player.BLACK:
+            if square.row != 3:
+                return None
+            square_in_front = -1
+
+        elif square.row != BOARD_SIZE - 4:
+            return None
+
+        square_left = Square.at(square.row, square.col - 1)
+        square_right = Square.at(square.row, square.col + 1)
+
+        piece_left = None
+        piece_right = None
+
+        if board.is_in_bounds(square_left):
+            piece_left = board.get_piece(square_left)
+        if board.is_in_bounds(square_right):
+            piece_right = board.get_piece(square_right)
+
+        if piece_left and piece_left.player != self.player and board.last_piece_moved == piece_left \
+                and type(piece_left) is Pawn and Pawn(piece_left).has_moved_two:
+            return Square.at(square_left.row + square_in_front, square_left.col)
+
+        if piece_right and piece_right.player != self.player and board.last_piece_moved == piece_right \
+                and type(piece_right) is Pawn and Pawn(piece_right).has_moved_two:
+            return Square.at(square_right + square_in_front, square_right.col)
+
+    def can_move_forward(self, board: Board, square: Square) -> bool:
+        return not (self.at_edge(square) or self.has_piece_in_front(board, square))
 
     def get_available_moves(self, board) -> List[Square]:
         current_square = board.find_piece(self)
-        square_list = self.get_moves_diagonal(board, current_square)
-
         square_in_front = 1
 
-        if not self.can_move(board, current_square, len(square_list) > 0):
-            return []
+        square_list = self.get_moves_diagonal(board, current_square)
+
+        en_passant = self.get_en_passant(board, current_square)
+        if en_passant:
+            square_list.append(en_passant)
+
+        if not self.can_move_forward(board, current_square):
+            return square_list
 
         if self.player == Player.BLACK:
             square_in_front *= -1
