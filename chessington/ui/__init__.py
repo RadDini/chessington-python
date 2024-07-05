@@ -86,6 +86,7 @@ def play_game():
 
         return handle_click
 
+
     # Create the board
     for row in range(BOARD_SIZE):
         for col in range(BOARD_SIZE):

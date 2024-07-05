@@ -81,6 +81,7 @@ class Board:
         """
         Moves the piece from the given starting square to the given destination square.
         """
+
         moving_piece = self.get_piece(from_square)
         if moving_piece is not None and moving_piece.player == self.current_player:
             self.set_piece(to_square, moving_piece)
@@ -103,6 +104,11 @@ class Board:
 
             self.current_player = self.current_player.opponent()
 
+        if self.is_checkmate(self.current_player):
+            print("Checkmate!")
+            exit(0)
+
+
     def is_check(self, king_square=None, current_player=Player.WHITE):
         if king_square is None:
             king_square = self.kings_pos[current_player]
@@ -117,4 +123,19 @@ class Board:
                     if piece.get_all_moves(board=self) and king_square in piece.get_all_moves(self):
                         return True
 
+        return False
+
+    def is_checkmate(self, king_square=None, current_player=Player.WHITE):
+        if self.is_check(self.current_player):
+            print("Is check!")
+            for row in range(BOARD_SIZE):
+                for col in range(BOARD_SIZE):
+                    piece_square = Square.at(row, col)
+
+                    piece = self.get_piece(piece_square)
+
+                    if len(piece.get_available_moves(self)) > 0:
+                        return False
+
+            return True
         return False
