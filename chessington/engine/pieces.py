@@ -215,7 +215,11 @@ class Queen(Piece):
     """
 
     def get_available_moves(self, board):
-        return []
+        current_square = board.find_piece(self)
+        directions = [(1, 0), (-1, 0), (0, 1), (0, -1),
+                      (1, 1), (1, -1), (-1, 1), (-1, -1)]
+
+        return get_moves_on_directions(board, current_square, self.player, directions)
 
 
 class King(Piece):
