@@ -18,6 +18,8 @@ class Board:
         self.current_player = Player.WHITE
         self.board = board_state
         self.last_piece_moved = None
+        self.kings_pos = {Player.WHITE: Square.at(0, int(BOARD_SIZE / 2)),
+                          Player.BLACK: Square.at(BOARD_SIZE - 1, int(BOARD_SIZE / 2))}
 
     @staticmethod
     def empty():
@@ -83,7 +85,6 @@ class Board:
         if moving_piece is not None and moving_piece.player == self.current_player:
             self.set_piece(to_square, moving_piece)
             self.set_piece(from_square, None)
-            self.current_player = self.current_player.opponent()
             self.last_piece_moved = moving_piece
             if type(moving_piece) is Pawn:
                 if abs(from_square.row - to_square.row) == 2:
@@ -92,3 +93,28 @@ class Board:
                 if abs(from_square.col - to_square.col) == 1 and abs(from_square.row - to_square.row) == 1 \
                         and self.get_piece(Square.at(from_square.row, to_square.col)) is not None:
                     self.set_piece(Square.at(from_square.row, to_square.col), None)
+
+                if to_square.row == 0 or to_square.row == BOARD_SIZE - 1:
+                    self.set_piece(Square.at(to_square.row, to_square.col), None)
+                    self.set_piece(Square.at(to_square.row, to_square.col), Queen(self.current_player))
+
+            if type(moving_piece) is King:
+                self.kings_pos[self.current_player] = Square.at(to_square.row, to_square.col)
+
+            self.current_player = self.current_player.opponent()
+
+    def is_check(self, king_square=None, current_player=Player.WHITE):
+        if king_square is None:
+            king_square = self.kings_pos[current_player]
+
+        for row in range(BOARD_SIZE):
+            for col in range(BOARD_SIZE):
+                piece_square = Square.at(row, col)
+
+                piece = self.get_piece(piece_square)
+
+                if piece is not None and piece.player == current_player.opponent():
+                    if piece.get_all_moves(board=self) and king_square in piece.get_all_moves(self):
+                        return True
+
+        return False

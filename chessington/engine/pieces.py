@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, List, Tuple, Any
 
@@ -19,11 +20,19 @@ class Piece(ABC):
     def __init__(self, player: Player):
         self.player = player
 
-    @abstractmethod
     def get_available_moves(self, board: Board) -> List[Square]:
-        """
-        Get all squares that the piece is allowed to move to.
-        """
+        square_list = self.get_all_moves(board)
+        final_square_list = []
+        current_square = board.find_piece(self)
+
+        for square in square_list:
+            if self.is_move_legal(board, current_square, square):
+                final_square_list.append(square)
+
+        return final_square_list
+
+    @abstractmethod
+    def get_all_moves(self, board: Board) -> List[Square]:
         pass
 
     def move_to(self, board, new_square):
@@ -33,6 +42,15 @@ class Piece(ABC):
         current_square = board.find_piece(self)
         board.move_piece(current_square, new_square)
 
+    def is_move_legal(self, board: Board, current_square: Square, next_square) -> bool:
+        copy_board = copy.deepcopy(board)
+
+        copy_board.move_piece(current_square, next_square)
+
+        if copy_board.is_check(current_player=self.player):
+            return False
+
+        return True
 
 class Pawn(Piece):
     """
@@ -129,7 +147,7 @@ class Pawn(Piece):
     def can_move_forward(self, board: Board, square: Square) -> bool:
         return not (self.at_edge(square) or self.has_piece_in_front(board, square))
 
-    def get_available_moves(self, board) -> List[Square]:
+    def get_all_moves(self, board) -> List[Square]:
         current_square = board.find_piece(self)
         square_in_front = 1
 
@@ -156,8 +174,7 @@ class Knight(Piece):
     """
     A class representing a chess knight.
     """
-
-    def get_available_moves(self, board):
+    def get_all_moves(self, board):
         current_square = board.find_piece(self)
         square_list = []
 
@@ -216,7 +233,7 @@ class Bishop(Piece):
     A class representing a chess bishop.
     """
 
-    def get_available_moves(self, board):
+    def get_all_moves(self, board):
         current_square = board.find_piece(self)
         directions = [(1, 1), (1, -1), (-1, 1), (-1, -1)]
 
@@ -227,8 +244,7 @@ class Rook(Piece):
     """
     A class representing a chess rook.
     """
-
-    def get_available_moves(self, board):
+    def get_all_moves(self, board):
         current_square = board.find_piece(self)
         directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
 
@@ -239,8 +255,7 @@ class Queen(Piece):
     """
     A class representing a chess queen.
     """
-
-    def get_available_moves(self, board):
+    def get_all_moves(self, board):
         current_square = board.find_piece(self)
         directions = [(1, 0), (-1, 0), (0, 1), (0, -1),
                       (1, 1), (1, -1), (-1, 1), (-1, -1)]
@@ -253,9 +268,10 @@ class King(Piece):
     A class representing a chess king.
     """
 
-    def get_available_moves(self, board):
+    def get_all_moves(self, board):
         current_square = board.find_piece(self)
-        directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+        directions = [(1, 0), (-1, 0), (0, 1), (0, -1),
+                      (1, 1), (1, -1), (-1, 1), (-1, -1)]
 
         square_list = []
 
@@ -270,7 +286,9 @@ class King(Piece):
             if piece:
                 if piece.player == self.player:
                     continue
-
             square_list.append(next_square)
 
         return square_list
+
+
+
