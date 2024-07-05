@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import logging
+
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, List, Tuple, Any
 
@@ -9,6 +11,9 @@ if TYPE_CHECKING:
     from chessington.engine.board import Board
 
 BOARD_SIZE = 8
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(filename='chessington.log', level=logging.DEBUG)
 
 
 class Piece(ABC):
@@ -96,6 +101,7 @@ class Pawn(Piece):
         return square_list
 
     def get_en_passant(self, board: Board, square: Square) -> Any | None:
+        print("in enpassant on square" + str(square))
         square_in_front = 1
 
         if self.player == Player.BLACK:
@@ -118,12 +124,12 @@ class Pawn(Piece):
             piece_right = board.get_piece(square_right)
 
         if piece_left and piece_left.player != self.player and board.last_piece_moved == piece_left \
-                and type(piece_left) is Pawn and Pawn(piece_left).has_moved_two:
+                and type(piece_left) is Pawn and piece_left.has_moved_two:
             return Square.at(square_left.row + square_in_front, square_left.col)
 
         if piece_right and piece_right.player != self.player and board.last_piece_moved == piece_right \
-                and type(piece_right) is Pawn and Pawn(piece_right).has_moved_two:
-            return Square.at(square_right + square_in_front, square_right.col)
+                and type(piece_right) is Pawn and piece_right.has_moved_two:
+            return Square.at(square_right.row + square_in_front, square_right.col)
 
     def can_move_forward(self, board: Board, square: Square) -> bool:
         return not (self.at_edge(square) or self.has_piece_in_front(board, square))

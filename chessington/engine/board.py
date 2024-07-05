@@ -85,3 +85,10 @@ class Board:
             self.set_piece(from_square, None)
             self.current_player = self.current_player.opponent()
             self.last_piece_moved = moving_piece
+            if type(moving_piece) is Pawn:
+                if abs(from_square.row - to_square.row) == 2:
+                    moving_piece.has_moved_two = True
+
+                if abs(from_square.col - to_square.col) == 1 and abs(from_square.row - to_square.row) == 1 \
+                        and self.get_piece(Square.at(from_square.row, to_square.col)) is not None:
+                    self.set_piece(Square.at(from_square.row, to_square.col), None)
