@@ -46,7 +46,6 @@ class Pawn(Piece):
                 return True
         return False
 
-
     def has_piece_in_front(self, board: Board, current_square, distance=1) -> bool:
         if self.player == Player.BLACK:
             distance *= -1
@@ -65,62 +64,52 @@ class Pawn(Piece):
 
         return False
 
-    def has_piece_diagonal(self, board: Board, square: Square) -> bool:
+    def get_moves_diagonal(self, board: Board, square: Square) -> List[Square]:
         increment = 1
+        square_list = []
         if self.player == Player.BLACK:
             increment = -1
 
-            diag_left = board.get_piece(Square.at(square.row + increment, square.col - 1))
-            diag_right = board.get_piece(Square.at(square.row + increment, square.col + 1))
+        square_diag_left = Square.at(square.row + increment, square.col - 1)
+        square_diag_right = Square.at(square.row + increment, square.col + 1)
+        diag_left = None
+        diag_right = None
 
-            if (diag_left and diag_left.player != self.player) \
-                    or (diag_right and diag_right.player != self.player):
-                return True
-        return False
+        if board.is_in_bounds(square_diag_left):
+            diag_left = board.get_piece(square_diag_left)
 
-    def get_moves_diag(self, board: Board, square: Square) -> List[Square]:
-        square_list = []
+        if board.is_in_bounds(square_diag_right):
+            diag_right = board.get_piece(square_diag_right)
 
-        if self.player == Player.BLACK:
-            diag_left = board.get_piece(Square.at(square.row - 1, square.col - 1))
-            diag_right = board.get_piece(Square.at(square.row - 1, square.col + 1))
+        if diag_left and diag_left.player != self.player:
+            square_list.append(square_diag_left)
 
-            if diag_left and diag_left.player == Player.WHITE:
-                square_list.append(Square.at(square.row - 1, square.col - 1))
-            if diag_right and diag_right.player == Player.WHITE:
-                square_list.append(Square.at(square.row - 1, square.col + 1))
-        else:
-            diag_left = board.get_piece(Square.at(square.row + 1, square.col - 1))
-            diag_right = board.get_piece(Square.at(square.row + 1, square.col + 1))
-
-            if diag_left and diag_left.player == Player.BLACK:
-                square_list.append(Square.at(square.row + 1, square.col - 1))
-            if diag_right and diag_right.player == Player.BLACK:
-                square_list.append(Square.at(square.row + 1, square.col + 1))
+        if diag_right and diag_right.player != self.player:
+            square_list.append(square_diag_right)
 
         return square_list
 
-    def can_move(self, board: Board, square: Square) -> bool:
+    def can_move(self, board: Board, square: Square, has_piece_diagonal: bool) -> bool:
         if not self.at_edge(square):
-            return self.has_piece_diagonal(board, square) or not self.has_piece_in_front(board, square)
+            return has_piece_diagonal or not self.has_piece_in_front(board, square)
 
         return False
 
     def get_available_moves(self, board) -> List[Square]:
         current_square = board.find_piece(self)
-        square_list = []
-        increment = 1
-        if not self.can_move(board, current_square):
-            return square_list
+        square_list = self.get_moves_diagonal(board, current_square)
+
+        square_in_front = 1
+
+        if not self.can_move(board, current_square, len(square_list) > 0):
+            return []
 
         if self.player == Player.BLACK:
-            increment *= -1
+            square_in_front *= -1
 
-        square_list.append(Square.at(current_square.row + increment, current_square.col))
+        square_list.append(Square.at(current_square.row + square_in_front, current_square.col))
         if self.has_not_moved(current_square) and not self.has_piece_in_front(board, current_square, distance=2):
-            square_list.append(Square.at(current_square.row + (2 * increment), current_square.col))
-
-        square_list += self.get_moves_diag(board, current_square)
+            square_list.append(Square.at(current_square.row + (2 * square_in_front), current_square.col))
 
         return square_list
 
@@ -152,8 +141,7 @@ class Knight(Piece):
         return square_list
 
 
-
-def get_moves_on_directions(board: Board, square: Square, player, directions : List[Tuple[int, int]]) -> List[Square]:
+def get_moves_on_directions(board: Board, square: Square, player, directions: List[Tuple[int, int]]) -> List[Square]:
     next_squares = [square for _ in directions]
     invalid_directions = []
 
@@ -248,4 +236,3 @@ class King(Piece):
             square_list.append(next_square)
 
         return square_list
-
