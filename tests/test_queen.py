@@ -1,5 +1,3 @@
-import unittest
-
 from chessington.engine.board import Board
 from chessington.engine.data import Player, Square
 from chessington.engine.pieces import Queen
@@ -51,7 +49,6 @@ class TestQueen:
         # Assert
         for pos in range(1, 8):
             assert Square.at(0, pos) in moves
-
 
     @staticmethod
     def test_queen_can_move_left():
@@ -162,6 +159,7 @@ class TestQueen:
         assert Square.at(3, 3) in moves
         assert Square.at(5, 3) in moves
         assert Square.at(5, 5) in moves
+
     @staticmethod
     def test_queen_cannot_move_past_piece_same_color():
         # Arrange

@@ -1,7 +1,9 @@
 from __future__ import annotations
+
 from abc import ABC, abstractmethod
-from chessington.engine.data import Player, Square
 from typing import TYPE_CHECKING, List, Tuple
+
+from chessington.engine.data import Player, Square
 
 if TYPE_CHECKING:
     from chessington.engine.board import Board

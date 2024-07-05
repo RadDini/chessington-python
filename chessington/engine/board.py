@@ -49,10 +49,8 @@ class Board:
 
     @staticmethod
     def is_in_bounds(square: Square) -> bool:
-        if square.row >= BOARD_SIZE or square.row < 0 \
-                or square.col >= BOARD_SIZE or square.col < 0:
-            return False
-        return True
+        return not (square.row >= BOARD_SIZE or square.row < 0
+                    or square.col >= BOARD_SIZE or square.col < 0)
 
     def set_piece(self, square, piece):
         """

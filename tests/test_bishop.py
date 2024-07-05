@@ -166,7 +166,7 @@ class TestBishop:
 
         # Assert
         assert Square.at(8, 8) not in moves
-        assert Square.at(8, 6 ) not in moves
+        assert Square.at(8, 6) not in moves
         assert Square.at(6, 8) not in moves
 
     @staticmethod
@@ -182,7 +182,7 @@ class TestBishop:
 
         # Assert
         assert Square.at(-1, -1) not in moves
-        assert Square.at(-1,1) not in moves
+        assert Square.at(-1, 1) not in moves
         assert Square.at(1, -1) not in moves
 
     @staticmethod
@@ -200,7 +200,3 @@ class TestBishop:
         assert Square.at(-1, 8) not in moves
         assert Square.at(-1, 6) not in moves
         assert Square.at(1, 8) not in moves
-
-
-
-

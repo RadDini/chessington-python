@@ -1,5 +1,3 @@
-import unittest
-
 from chessington.engine.board import Board
 from chessington.engine.data import Player, Square
 from chessington.engine.pieces import Rook
@@ -51,7 +49,6 @@ class TestRook:
         # Assert
         for pos in range(1, 8):
             assert Square.at(0, pos) in moves
-
 
     @staticmethod
     def test_rook_can_move_left():

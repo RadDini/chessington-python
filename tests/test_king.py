@@ -1,5 +1,3 @@
-import unittest
-
 from chessington.engine.board import Board
 from chessington.engine.data import Player, Square
 from chessington.engine.pieces import King
@@ -162,4 +160,3 @@ class TestKing:
         # Assert
         assert Square.at(-1, 7) not in moves
         assert Square.at(0, 8) not in moves
-

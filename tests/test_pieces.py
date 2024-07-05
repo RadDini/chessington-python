@@ -1,14 +1,12 @@
-import unittest
-
 from chessington.engine.board import Board
 from chessington.engine.data import Player, Square
 from chessington.engine.pieces import Pawn
+
 
 class TestPawns:
 
     @staticmethod
     def test_white_pawns_can_move_up_one_square():
-
         # Arrange
         board = Board.empty()
         pawn = Pawn(Player.WHITE)
@@ -23,7 +21,6 @@ class TestPawns:
 
     @staticmethod
     def test_black_pawns_can_move_down_one_square():
-
         # Arrange
         board = Board.empty()
         pawn = Pawn(Player.BLACK)
@@ -38,7 +35,6 @@ class TestPawns:
 
     @staticmethod
     def test_white_pawn_can_move_up_two_squares_if_not_moved():
-
         # Arrange
         board = Board.empty()
         pawn = Pawn(Player.WHITE)
@@ -53,7 +49,6 @@ class TestPawns:
 
     @staticmethod
     def test_black_pawn_can_move_down_two_squares_if_not_moved():
-
         # Arrange
         board = Board.empty()
         pawn = Pawn(Player.BLACK)
@@ -68,7 +63,6 @@ class TestPawns:
 
     @staticmethod
     def test_white_pawn_cannot_move_up_two_squares_if_already_moved():
-
         # Arrange
         board = Board.empty()
         pawn = Pawn(Player.WHITE)
@@ -86,7 +80,6 @@ class TestPawns:
 
     @staticmethod
     def test_black_pawn_cannot_move_down_two_squares_if_already_moved():
-
         # Arrange
         board = Board.empty()
         pawn = Pawn(Player.BLACK)
@@ -104,7 +97,6 @@ class TestPawns:
 
     @staticmethod
     def test_white_pawn_cannot_move_if_piece_in_front():
-
         # Arrange
         board = Board.empty()
         pawn = Pawn(Player.WHITE)
@@ -123,7 +115,6 @@ class TestPawns:
 
     @staticmethod
     def test_black_pawn_cannot_move_if_piece_in_front():
-
         # Arrange
         board = Board.empty()
         pawn = Pawn(Player.BLACK)
@@ -142,7 +133,6 @@ class TestPawns:
 
     @staticmethod
     def test_white_pawn_cannot_move_two_squares_if_piece_two_in_front():
-
         # Arrange
         board = Board.empty()
         pawn = Pawn(Player.WHITE)
@@ -161,7 +151,6 @@ class TestPawns:
 
     @staticmethod
     def test_black_pawn_cannot_move_two_squares_if_piece_two_in_front():
-
         # Arrange
         board = Board.empty()
         pawn = Pawn(Player.BLACK)
@@ -180,7 +169,6 @@ class TestPawns:
 
     @staticmethod
     def test_white_pawn_cannot_move_two_squares_if_piece_one_in_front():
-
         # Arrange
         board = Board.empty()
         pawn = Pawn(Player.WHITE)
@@ -199,7 +187,6 @@ class TestPawns:
 
     @staticmethod
     def test_black_pawn_cannot_move_two_squares_if_piece_one_in_front():
-
         # Arrange
         board = Board.empty()
         pawn = Pawn(Player.BLACK)
@@ -218,7 +205,6 @@ class TestPawns:
 
     @staticmethod
     def test_white_pawn_cannot_move_at_top_of_board():
-
         # Arrange
         board = Board.empty()
         pawn = Pawn(Player.WHITE)
@@ -233,7 +219,6 @@ class TestPawns:
 
     @staticmethod
     def test_black_pawn_cannot_move_at_bottom_of_board():
-
         # Arrange
         board = Board.empty()
         pawn = Pawn(Player.BLACK)
@@ -248,7 +233,6 @@ class TestPawns:
 
     @staticmethod
     def test_white_pawns_can_capture_diagonally():
-
         # Arrange
         board = Board.empty()
         pawn = Pawn(Player.WHITE)
@@ -272,7 +256,6 @@ class TestPawns:
 
     @staticmethod
     def test_black_pawns_can_capture_diagonally():
-
         # Arrange
         board = Board.empty()
         pawn = Pawn(Player.BLACK)
@@ -296,7 +279,6 @@ class TestPawns:
 
     @staticmethod
     def test_white_pawns_cannot_move_diagonally_except_to_capture():
-
         # Arrange
         board = Board.empty()
         pawn = Pawn(Player.WHITE)
@@ -316,7 +298,6 @@ class TestPawns:
 
     @staticmethod
     def test_black_pawns_cannot_move_diagonally_except_to_capture():
-
         # Arrange
         board = Board.empty()
         pawn = Pawn(Player.BLACK)
@@ -333,6 +314,3 @@ class TestPawns:
         # Assert
         assert Square.at(2, 3) not in moves
         assert Square.at(2, 5) not in moves
-
-
-
